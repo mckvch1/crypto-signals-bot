@@ -1,3 +1,20 @@
+import os
+import threading
+from flask import Flask
+
+# --- Мини-веб для keep-alive на Render ---
+app = Flask(__name__)
+
+@app.get("/")
+def root():
+    return "ok", 200
+
+def run_web():
+    # Render обычно прокидывает PORT, но на всякий случай 8080 по умолчанию
+    port = int(os.environ.get("PORT", "8080"))
+    # host=0.0.0.0 обязательен для внешнего доступа
+    app.run(host="0.0.0.0", port=port, debug=False)
+
 import os, threading, time, requests, pandas as pd, numpy as np, schedule
 from io import BytesIO
 from flask import Flask
@@ -56,3 +73,4 @@ if __name__ == "__main__":
     threading.Thread(target=run_web, daemon=True).start()   # keep-alive веб
     start_bot()                                             # Telegram polling
     while True: time.sleep(60)                              # не выходим
+
